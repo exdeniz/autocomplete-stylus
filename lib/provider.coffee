@@ -17,7 +17,6 @@ module.exports =
   filterSuggestions: true
 
   getSuggestions: (request) ->
-    console.log(request.scopeDescriptor.getScopesArray())
     completions = null
     isCompletingPseudoSelector = @isCompletingPseudoSelector(request)
     if isCompletingPseudoSelector
