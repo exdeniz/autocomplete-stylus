@@ -8,8 +8,8 @@ tagSelectorPrefixPattern = /(^|\s|,)([a-z]+)?$/
 cssDocsURL = "https://developer.mozilla.org/en-US/docs/Web/CSS"
 
 module.exports =
-  selector: '.source.css'
-  disableForSelector: '.source.css .comment, .source.css .string'
+  selector: '.source.sass'
+  disableForSelector: '.source.sass .comment, .source.sass .string'
 
   # Tell autocomplete to fuzzy filter the results of getSuggestions(). We are
   # still filtering by the first character of the prefix in this provider for
@@ -17,20 +17,16 @@ module.exports =
   filterSuggestions: true
 
   getSuggestions: (request) ->
+    console.log(request.scopeDescriptor.getScopesArray())
     completions = null
     isCompletingPseudoSelector = @isCompletingPseudoSelector(request)
     if isCompletingPseudoSelector
       completions = @getPseudoSelectorCompletions(request)
     else if @isCompletingValue(request)
       completions = @getPropertyValueCompletions(request)
-    else if @isCompletingName(request)
+    else if @isCompletingNameOrTag(request)
       completions = @getPropertyNameCompletions(request)
-
-    if @isCompletingTagSelector(request)
-      tagCompletions = @getTagCompletions(request)
-      if tagCompletions?.length
-        completions ?= []
-        completions = completions.concat(tagCompletions)
+      completions = completions.concat(@getTagCompletions(request))
 
     completions
 
@@ -48,41 +44,22 @@ module.exports =
 
   isCompletingValue: ({scopeDescriptor}) ->
     scopes = scopeDescriptor.getScopesArray()
-    (scopes.indexOf('meta.property-value.css') isnt -1 and scopes.indexOf('punctuation.separator.key-value.css') is -1) or
-    (scopes.indexOf('meta.property-value.scss') isnt -1 and scopes.indexOf('punctuation.separator.key-value.scss') is -1)
+    return hasScope(scopes, 'meta.property-value.sass')
 
-  isCompletingName: ({scopeDescriptor})->
+  isCompletingNameOrTag: ({scopeDescriptor}) ->
     scopes = scopeDescriptor.getScopesArray()
-    scopes.indexOf('meta.property-list.css') isnt -1 or
-    scopes.indexOf('meta.property-list.scss') isnt -1
-
-  isCompletingTagSelector: ({editor, scopeDescriptor, bufferPosition}) ->
-    scopes = scopeDescriptor.getScopesArray()
-    tagSelectorPrefix = @getTagSelectorPrefix(editor, bufferPosition)
-    return false unless tagSelectorPrefix?.length
-
-    if hasScope(scopes, 'meta.selector.css')
-      true
-    else if hasScope(scopes, 'source.css.scss') or hasScope(scopes, 'source.css.less')
-      not hasScope(scopes, 'meta.property-value.scss') and
-        not hasScope(scopes, 'support.type.property-value.css')
-    else
-      false
+    return hasScope(scopes, 'meta.selector.css')
 
   isCompletingPseudoSelector: ({editor, scopeDescriptor, bufferPosition}) ->
     scopes = scopeDescriptor.getScopesArray()
-    if hasScope(scopes, 'meta.selector.css')
-      true
-    else if hasScope(scopes, 'source.css.scss') or hasScope(scopes, 'source.css.less')
+    if hasScope(scopes, 'source.sass')
       prefix = @getPseudoSelectorPrefix(editor, bufferPosition)
       if prefix
         previousBufferPosition = [bufferPosition.row, Math.max(0, bufferPosition.column - prefix.length - 1)]
         previousScopes = editor.scopeDescriptorForBufferPosition(previousBufferPosition)
         previousScopesArray = previousScopes.getScopesArray()
-        not hasScope(previousScopesArray, 'meta.property-name.scss') and
-          not hasScope(previousScopesArray, 'meta.property-value.scss') and
-          not hasScope(previousScopesArray, 'support.type.property-name.css') and
-          not hasScope(previousScopesArray, 'support.type.property-value.css')
+        not hasScope(previousScopesArray, 'meta.property-name.sass') and
+          not hasScope(previousScopesArray, 'meta.property-value.sass')
       else
         false
     else
@@ -117,7 +94,7 @@ module.exports =
 
   buildPropertyValueCompletion: (value, propertyName) ->
     type: 'value'
-    text: "#{value};"
+    text: "#{value}"
     displayText: value
     description: "#{value} value for the #{propertyName} property"
     descriptionMoreURL: "#{cssDocsURL}/#{propertyName}#Values"

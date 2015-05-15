@@ -1,4 +1,5 @@
-Copyright (c) 2015 GitHub Inc.
+autocomplete-css Copyright (c) 2015 GitHub Inc.
+autocomplete-sass Copyright (c) 2015 FILSH Media GmbH
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
