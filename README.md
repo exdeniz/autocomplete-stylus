@@ -6,7 +6,7 @@ installing this package.
 
 This is powered by the list of CSS property and values [here](https://github.com/adobe/brackets/blob/master/src/extensions/default/CSSCodeHints/CSSProperties.json)
 
-![css-completions](https://cloud.githubusercontent.com/assets/671378/6357910/b9ecbe7c-bc1c-11e4-89b1-033e626c891f.gif)
+![autocomplete-sass](http://i.imgur.com/1vB8Bdu.gif)
 
 You can update the prebuilt list of property names and values by running
 the `update.coffee` file at the root of the repository and then checking in
