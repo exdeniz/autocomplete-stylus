@@ -1,7 +1,7 @@
-# SASS Autocomplete Package [![Build Status](https://travis-ci.org/atom/autocomplete-sass.svg?branch=master)](https://travis-ci.org/atom/autocomplete-sass)
+# SASS Autocomplete Package [![Build Status](https://travis-ci.org/saschagehlich/autocomplete-sass.svg?branch=master)](https://travis-ci.org/saschagehlich/autocomplete-sass)
 
 CSS property name and value autocompletions for SASS in Atom. Install
-[autocomplete-plus](https://github.com/atom-community/autocomplete-plus) before
+[autocomplete-plus](https://github.com/atom/autocomplete-plus) before
 installing this package.
 
 This is powered by the list of CSS property and values [here](https://github.com/adobe/brackets/blob/master/src/extensions/default/CSSCodeHints/CSSProperties.json)
