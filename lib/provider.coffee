@@ -18,11 +18,10 @@ module.exports =
 
   getSuggestions: (request) ->
     completions = null
-    isCompletingPseudoSelector = @isCompletingPseudoSelector(request)
-    if isCompletingPseudoSelector
-      completions = @getPseudoSelectorCompletions(request)
-    else if @isCompletingValue(request)
+    if @isCompletingValue(request)
       completions = @getPropertyValueCompletions(request)
+    else if @isCompletingPseudoSelector(request)
+      completions = @getPseudoSelectorCompletions(request)
     else if @isCompletingNameOrTag(request)
       completions = @getPropertyNameCompletions(request)
       completions = completions.concat(@getTagCompletions(request))
@@ -41,13 +40,22 @@ module.exports =
       {@pseudoSelectors, @properties, @tags} = JSON.parse(content) unless error?
       return
 
-  isCompletingValue: ({scopeDescriptor}) ->
+  isCompletingValue: ({scopeDescriptor, prefix, bufferPosition, editor}) ->
     scopes = scopeDescriptor.getScopesArray()
-    return hasScope(scopes, 'meta.property-value.sass')
+
+    previousBufferPosition = [bufferPosition.row, Math.max(0, bufferPosition.column - prefix.length - 1)]
+    previousScopes = editor.scopeDescriptorForBufferPosition(previousBufferPosition)
+    previousScopesArray = previousScopes.getScopesArray()
+
+    return hasScope(scopes, 'meta.property-value.sass') or
+      (not hasScope(previousScopesArray, "entity.name.tag.css.sass") and
+        prefix.trim() is ":")
 
   isCompletingNameOrTag: ({scopeDescriptor}) ->
     scopes = scopeDescriptor.getScopesArray()
-    return hasScope(scopes, 'meta.selector.css')
+    return hasScope(scopes, 'meta.selector.css') and
+      not hasScope(scopes, 'entity.other.attribute-name.id.css.sass') and
+      not hasScope(scopes, 'entity.other.attribute-name.class.sass')
 
   isCompletingPseudoSelector: ({editor, scopeDescriptor, bufferPosition}) ->
     scopes = scopeDescriptor.getScopesArray()
@@ -102,7 +110,11 @@ module.exports =
     line = editor.getTextInRange([[bufferPosition.row, 0], bufferPosition])
     propertyNamePrefixPattern.exec(line)?[0]
 
-  getPropertyNameCompletions: ({bufferPosition, editor}) ->
+  getPropertyNameCompletions: ({bufferPosition, editor, prefix}) ->
+    # Don't show property names on root level
+    line = editor.getTextInRange([[bufferPosition.row, 0], bufferPosition])
+    return [] unless line.match /^(\s|\t)/
+
     prefix = @getPropertyNamePrefix(bufferPosition, editor)
     completions = []
     for property, options of @properties when not prefix or firstCharsEqual(property, prefix)
