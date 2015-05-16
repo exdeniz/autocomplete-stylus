@@ -1,10 +1,10 @@
 {
-  "name": "autocomplete-sass",
+  "name": "autocomplete-stylys",
   "version": "0.1.0",
-  "description": "CSS property name and value autocompletions for SASS",
+  "description": "CSS property name and value autocompletions for stylys",
   "main": "./lib/main",
   "license": "MIT",
-  "repository": "https://github.com/saschagehlich/autocomplete-sass",
+  "repository": "https://github.com/saschagehlich/autocomplete-stylys",
   "engines": {
     "atom": ">=0.174.0 <2.0.0"
   },

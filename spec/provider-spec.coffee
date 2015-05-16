@@ -1,7 +1,7 @@
 packagesToTest =
-  SASS:
-    name: 'language-sass'
-    file: 'test.scss'
+  Stylus:
+    name: 'language-stylus'
+    file: 'test.styl'
 
 describe "CSS property name and value autocompletions", ->
   [editor, provider] = []
@@ -19,17 +19,17 @@ describe "CSS property name and value autocompletions", ->
     provider.getSuggestions(request)
 
   beforeEach ->
-    waitsForPromise -> atom.packages.activatePackage('autocomplete-sass')
+    waitsForPromise -> atom.packages.activatePackage('autocomplete-stylys')
 
     runs ->
-      provider = atom.packages.getActivePackage('autocomplete-sass').mainModule.getProvider()
+      provider = atom.packages.getActivePackage('autocomplete-stylys').mainModule.getProvider()
 
     waitsFor -> Object.keys(provider.properties).length > 0
 
-  describe "SASS files", ->
+  describe "stylys files", ->
     beforeEach ->
-      waitsForPromise -> atom.packages.activatePackage('language-sass')
-      waitsForPromise -> atom.workspace.open('test.sass')
+      waitsForPromise -> atom.packages.activatePackage('language-stylys')
+      waitsForPromise -> atom.workspace.open('test.stylys')
       runs -> editor = atom.workspace.getActiveTextEditor()
 
     it "autocompletes property names with a prefix", ->

@@ -8,8 +8,8 @@ tagSelectorPrefixPattern = /(^|\s|,)([a-z]+)?$/
 cssDocsURL = "https://developer.mozilla.org/en-US/docs/Web/CSS"
 
 module.exports =
-  selector: '.source.sass'
-  disableForSelector: '.source.sass .comment, .source.sass .string'
+  selector: '.source.stylus'
+  disableForSelector: '.source.stylus .comment, .source.stylus .string'
 
   # Tell autocomplete to fuzzy filter the results of getSuggestions(). We are
   # still filtering by the first character of the prefix in this provider for
@@ -47,26 +47,26 @@ module.exports =
     previousScopes = editor.scopeDescriptorForBufferPosition(previousBufferPosition)
     previousScopesArray = previousScopes.getScopesArray()
 
-    return hasScope(scopes, 'meta.property-value.sass') or
-      (not hasScope(previousScopesArray, "entity.name.tag.css.sass") and
+    return hasScope(scopes, 'meta.property-value.stylus') or
+      (not hasScope(previousScopesArray, "entity.name.tag.css.stylus") and
         prefix.trim() is ":")
 
   isCompletingNameOrTag: ({scopeDescriptor}) ->
     scopes = scopeDescriptor.getScopesArray()
     return hasScope(scopes, 'meta.selector.css') and
-      not hasScope(scopes, 'entity.other.attribute-name.id.css.sass') and
-      not hasScope(scopes, 'entity.other.attribute-name.class.sass')
+      not hasScope(scopes, 'entity.other.attribute-name.id.css.stylus') and
+      not hasScope(scopes, 'entity.other.attribute-name.class.stylus')
 
   isCompletingPseudoSelector: ({editor, scopeDescriptor, bufferPosition}) ->
     scopes = scopeDescriptor.getScopesArray()
-    if hasScope(scopes, 'source.sass')
+    if hasScope(scopes, 'source.stylus')
       prefix = @getPseudoSelectorPrefix(editor, bufferPosition)
       if prefix
         previousBufferPosition = [bufferPosition.row, Math.max(0, bufferPosition.column - prefix.length - 1)]
         previousScopes = editor.scopeDescriptorForBufferPosition(previousBufferPosition)
         previousScopesArray = previousScopes.getScopesArray()
-        not hasScope(previousScopesArray, 'meta.property-name.sass') and
-          not hasScope(previousScopesArray, 'meta.property-value.sass')
+        not hasScope(previousScopesArray, 'meta.property-name.stylus') and
+          not hasScope(previousScopesArray, 'meta.property-value.stylus')
       else
         false
     else
@@ -123,7 +123,7 @@ module.exports =
 
   buildPropertyNameCompletion: (propertyName, prefix, {description}) ->
     type: 'property'
-    text: "#{propertyName}: "
+    text: "#{propertyName} "
     displayText: propertyName
     replacementPrefix: prefix
     description: description
